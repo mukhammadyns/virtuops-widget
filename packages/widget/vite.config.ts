@@ -12,7 +12,10 @@ export default defineConfig({
       fileName: () => 'widget.es.js',
     },
     rollupOptions: {
-      external: ['react', 'react-dom', 'react/jsx-runtime'],
+      // Sub-paths must be covered too: bundling `react-dom/client` inlines a
+      // shim that reaches into react-dom internals and breaks on React 19,
+      // while `react-dom` itself stays external.
+      external: [/^react($|\/)/, /^react-dom($|\/)/],
       output: {
         globals: {
           react: 'React',

@@ -25,8 +25,15 @@ function initWidget(token: string, apiUrl?: string, theme?: ThemeOverride) {
   document.body.appendChild(el)
 }
 
-window.VirtuOpsWidget = {
-  init: ({ token, apiUrl, theme }) => initWidget(token, apiUrl, theme),
+/** Programmatic mount. In the IIFE build this lands on `window.VirtuOpsWidget`
+ *  as a module export — assigning to that global here would not survive, since
+ *  the bundle overwrites it with the export object once the script finishes. */
+export function init(opts: {
+  token: string
+  apiUrl?: string
+  theme?: ThemeOverride
+}) {
+  initWidget(opts.token, opts.apiUrl, opts.theme)
 }
 
 // Declarative: <script>window.VirtuOps = { token: "wgt_xxx" }</script>

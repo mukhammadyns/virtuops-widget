@@ -13,9 +13,9 @@ Embeddable AI chat widget for [VirtuOps](https://virtuops.io). Drop one snippet 
 
 ```html
 <script>
-  window.VirtuOps = { token: "wgt_your_token_here" };
+  window.VirtuOps = { token: "virtu_your_token_here" };
 </script>
-<script src="https://unpkg.com/@virtuops/widget"></script>
+<script src="https://unpkg.com/@virtuops/widget@0.2/dist/widget.js"></script>
 ```
 
 That's it. The widget mounts itself before `</body>` with sensible defaults; everything else is configured from your VirtuOps dashboard.
@@ -32,16 +32,17 @@ pnpm add @virtuops/widget
 import "@virtuops/widget";
 
 // Either declarative — same as the CDN form:
-window.VirtuOps = { token: "wgt_your_token_here" };
+window.VirtuOps = { token: "virtu_your_token_here" };
 
 // Or imperative:
-window.VirtuOpsWidget.init({ token: "wgt_your_token_here" });
+import { init } from "@virtuops/widget";
+init({ token: "virtu_your_token_here" });
 ```
 
 The package registers a `<virtuops-chat>` custom element. You can also drop it directly:
 
 ```html
-<virtuops-chat token="wgt_your_token_here"></virtuops-chat>
+<virtuops-chat token="virtu_your_token_here"></virtuops-chat>
 ```
 
 ## React
@@ -56,7 +57,7 @@ npm install @virtuops/widget-react
 import { Chat } from "@virtuops/widget-react";
 
 export default function App() {
-  return <Chat token="wgt_your_token_here" />;
+  return <Chat token="virtu_your_token_here" />;
 }
 ```
 
@@ -80,11 +81,11 @@ By default the widget talks to `https://api.virtuops.io`. Self-hosted deployment
 ```html
 <script>
   window.VirtuOps = {
-    token: "wgt_your_token_here",
+    token: "virtu_your_token_here",
     apiUrl: "https://api.your-company.com"
   };
 </script>
-<script src="https://unpkg.com/@virtuops/widget"></script>
+<script src="https://unpkg.com/@virtuops/widget@0.2/dist/widget.js"></script>
 ```
 
 ## Browser support

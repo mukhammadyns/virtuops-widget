@@ -179,31 +179,49 @@ export function useChat(
           setIsStreaming(false)
           cleanupRef.current = null
         },
+        // onHandoff: a human took over this conversation. The bot's own handoff
+        // line already streamed in, so only append the dashboard-configured
+        // offlineMessage — with none set there is nothing left to say.
         () => {
-          const handoffText =
-            config?.offlineMessage?.trim() ||
-            'You have been connected to a human agent.'
-          setMessages((prev) => [
-            ...prev.map((m) => (m.id === assistantId ? { ...m, streaming: false } : m)),
-            {
-              id: makeId(),
-              role: 'system',
-              content: handoffText,
-              timestamp: new Date(),
-            },
-          ])
-          setIsStreaming(false)
-          cleanupRef.current = null
+          const offline = config?.offlineMessage?.trim()
+          setMessages((prev) => {
+            const settled = prev.map((m) =>
+              m.id === assistantId ? { ...m, streaming: false } : m,
+            )
+            if (!offline) return settled
+            return [
+              ...settled,
+              {
+                id: makeId(),
+                role: 'system' as const,
+                content: offline,
+                timestamp: new Date(),
+              },
+            ]
+          })
         },
+        // onError: EventSource collapses every failure — 403 origin, 404 token,
+        // 429 throttle, plan limit, dropped connection — into one opaque event.
+        // Silently dropping the bubble made the visitor's message look like it
+        // evaporated, so say something instead.
         () => {
           setMessages((prev) => {
             const target = prev.find((m) => m.id === assistantId)
-            if (target && target.content.length === 0) {
-              return prev.filter((m) => m.id !== assistantId)
-            }
-            return prev.map((m) =>
-              m.id === assistantId ? { ...m, streaming: false } : m,
-            )
+            const withoutEmpty =
+              target && target.content.length === 0
+                ? prev.filter((m) => m.id !== assistantId)
+                : prev.map((m) =>
+                    m.id === assistantId ? { ...m, streaming: false } : m,
+                  )
+            return [
+              ...withoutEmpty,
+              {
+                id: makeId(),
+                role: 'system',
+                content: "Message couldn't be delivered. Please try again.",
+                timestamp: new Date(),
+              },
+            ]
           })
           setIsStreaming(false)
           cleanupRef.current = null

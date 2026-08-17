@@ -13,9 +13,9 @@ This is a pnpm monorepo with two packages:
 
 ```html
 <script>
-  window.VirtuOps = { token: "wgt_your_token_here" };
+  window.VirtuOps = { token: "virtu_your_token_here" };
 </script>
-<script src="https://unpkg.com/@virtuops/widget"></script>
+<script src="https://unpkg.com/@virtuops/widget@0.2/dist/widget.js"></script>
 ```
 
 Get your token from the VirtuOps dashboard → Bot → Deploy → Web Widget → Generate token.
