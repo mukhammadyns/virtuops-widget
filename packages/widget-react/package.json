@@ -1,6 +1,6 @@
 {
   "name": "@virtuops/widget-react",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "React wrapper for @virtuops/widget — embed the VirtuOps chat widget as a JSX component.",
   "license": "MIT",
   "author": "VirtuOps",
@@ -32,7 +32,9 @@
       "import": "./dist/index.js"
     }
   },
-  "sideEffects": ["dist/index.js"],
+  "sideEffects": [
+    "dist/index.js"
+  ],
   "files": [
     "dist",
     "README.md",
