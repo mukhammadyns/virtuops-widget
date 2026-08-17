@@ -30,15 +30,38 @@ export interface HistoryResponse {
 
 const configCache = new Map<string, WidgetConfig>()
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+/** The API validates visitorId with @IsUUID(), and `crypto.randomUUID` only
+ *  exists in a secure context — on a plain http:// host page it is undefined.
+ *  So build the UUIDv4 by hand there; `getRandomValues` is available in both
+ *  contexts and only falls back to Math.random on ancient browsers. */
+function randomUuid(): string {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID()
+  }
+
+  const bytes = new Uint8Array(16)
+  if (typeof crypto !== 'undefined' && typeof crypto.getRandomValues === 'function') {
+    crypto.getRandomValues(bytes)
+  } else {
+    for (let i = 0; i < bytes.length; i++) bytes[i] = Math.floor(Math.random() * 256)
+  }
+  bytes[6] = (bytes[6] & 0x0f) | 0x40 // version 4
+  bytes[8] = (bytes[8] & 0x3f) | 0x80 // variant 10x
+
+  const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('')
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`
+}
+
 function getOrCreateVisitorId(token: string): string {
   const key = `vo_visitor_${token}`
   const stored = localStorage.getItem(key)
-  if (stored) return stored
+  // Widgets released before the fix persisted a non-UUID id, which the API
+  // rejects with 400 forever — reissue instead of honouring it.
+  if (stored && UUID_RE.test(stored)) return stored
 
-  const id =
-    typeof crypto !== 'undefined' && crypto.randomUUID
-      ? crypto.randomUUID()
-      : `${Date.now()}-${Math.random().toString(36).slice(2)}`
+  const id = randomUuid()
   localStorage.setItem(key, id)
   return id
 }
@@ -136,11 +159,12 @@ export class WidgetApiClient {
         if (data.token !== undefined) onToken(data.token)
         else if (data.kind === 'media' && Array.isArray(data.segments)) {
           onMedia?.(data.media ?? [], data.segments)
+        } else if (data.kind === 'handoff') {
+          // The handoff text itself already streamed as tokens; this only marks
+          // that a human took over. The stream still finishes with `done`.
+          onHandoff()
         } else if (data.done) {
           onDone()
-          es.close()
-        } else if (data.handoff) {
-          onHandoff()
           es.close()
         }
       } catch {

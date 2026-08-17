@@ -18,7 +18,7 @@ pnpm add @virtuops/widget-react
 import { Chat } from "@virtuops/widget-react";
 
 export default function App() {
-  return <Chat token="wgt_your_token_here" />;
+  return <Chat token="virtu_your_token_here" />;
 }
 ```
 
@@ -28,7 +28,7 @@ That's the whole API surface. Branding, behavior, suggested questions, allowed o
 
 ```tsx
 <Chat
-  token="wgt_your_token_here"
+  token="virtu_your_token_here"
   apiUrl="https://api.your-company.com"
 />
 ```

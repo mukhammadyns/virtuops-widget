@@ -32,7 +32,7 @@
       "import": "./dist/index.js"
     }
   },
-  "sideEffects": false,
+  "sideEffects": ["dist/index.js"],
   "files": [
     "dist",
     "README.md",
