@@ -1,5 +1,12 @@
 # @virtuops/widget-react
 
+## 0.2.2
+
+### Patch Changes
+
+- Updated dependencies [45edab2]
+  - @virtuops/widget@0.2.2
+
 ## 0.2.1
 
 ### Patch Changes

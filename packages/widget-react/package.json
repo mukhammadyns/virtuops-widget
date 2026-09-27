@@ -1,6 +1,6 @@
 {
   "name": "@virtuops/widget-react",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "React wrapper for @virtuops/widget — embed the VirtuOps chat widget as a JSX component.",
   "license": "MIT",
   "author": "VirtuOps",
