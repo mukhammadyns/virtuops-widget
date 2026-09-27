@@ -84,7 +84,11 @@ export function ChatWindow({
           <div className="vo-powered">
             <VirtuOpsLogo />
             Powered by{' '}
-            <a href="https://virtuops.io" target="_blank" rel="noopener noreferrer">
+            <a
+              href="https://virtuops.io/?utm_source=widget&utm_medium=powered_by"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               VirtuOps
             </a>
           </div>
